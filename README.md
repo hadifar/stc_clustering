@@ -1,9 +1,9 @@
 # Short text clustering
 
 
-This repository contains the code presented in the work:
+This repository contains the code presented in rep4NLP 2019:
 
-[Short text clustering](https://github.com/hadifar)
+[A Self-training Approach for Short Text Clustering](https://sites.google.com/view/repl4nlp2019/accepted-papers?authuser=0)
 
 If you use part of the code please cite:  
 
@@ -27,10 +27,12 @@ If you use part of the code please cite:
 
 #### Reproduce results for search snippets ###
 
-<code> python STC.py --maxiter 100 --ae_weights data/search_snippets/results/ae_weights.h5 --save_dir data/search_snippets/results/
-</code>
+<pre> python STC.py --maxiter 100 --ae_weights data/search_snippets/results/ae_weights.h5 --save_dir data/search_snippets/results/
+</pre>
 
-if you have used the datasets, please also cite the following paper:
+
+
+if you have used the datasets, please cite the following paper:
 
 ```
 @article{xu2017self,
