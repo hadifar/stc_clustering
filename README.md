@@ -25,12 +25,10 @@ If you use part of the code please cite:
 > pip install -r requirements.txt 
 
 
-#### Reproduce results for search snippets ###
+#### Reproduce results for stackoverflow ###
 
-<pre> python STC.py --maxiter 100 --ae_weights data/search_snippets/results/ae_weights.h5 --save_dir data/search_snippets/results/
+<pre> python STC.py --maxiter 1500 --ae_weights data/stackoverflow/results/ae_weights.h5 --save_dir data/stackoverflow/results/
 </pre>
-
-
 
 if you have used the datasets, please cite the following paper:
 
@@ -47,4 +45,4 @@ year={2017}
 
 #### Acknowledge
 
-This code is based on code from [here](https://github.com/XifengGuo/DEC-keras).
+This code is based on repo from [here](https://github.com/XifengGuo/DEC-keras).

@@ -10,13 +10,7 @@ from sklearn.decomposition import PCA, TruncatedSVD
 from sklearn.preprocessing import MinMaxScaler
 
 
-def load_stackoverflow(data_path='data/Stackoverflow/rawText/'):
-
-    # load saved features
-    if os.path.isfile(data_path + 'XX.npy'):
-        XX = np.load(data_path + 'XX.npy')
-        y = np.load(data_path + 'y.npy')
-        return XX, y
+def load_stackoverflow(data_path='data/stackoverflow/'):
 
     # load SO embedding
     with open(data_path + 'vocab_withIdx.dic', 'r') as inp_indx, \
@@ -85,10 +79,6 @@ def load_stackoverflow(data_path='data/Stackoverflow/rawText/'):
     with open(data_path + 'label_StackOverflow.txt') as label_file:
         y = np.array(list((map(int, label_file.readlines()))))
         print(y.dtype)
-
-    # save
-    np.save(data_path + 'XX.npy', XX)
-    np.save(data_path + 'y.npy', y)
 
     return XX, y
 

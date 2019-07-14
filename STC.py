@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 from time import time
 
 import numpy as np
@@ -11,6 +12,7 @@ from tensorflow.python.keras.optimizers import SGD
 
 import metrics
 from data_loader import load_data
+
 
 def autoencoder(dims, act=tf.nn.leaky_relu, init='glorot_uniform'):
     n_stacks = len(dims) - 1
@@ -198,35 +200,34 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='train',
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--dataset', default='search_snippets',
+    parser.add_argument('--dataset', default='stackoverflow',
                         choices=['stackoverflow', 'biomedical', 'search_snippets'])
 
     parser.add_argument('--batch_size', default=64, type=int)
-    parser.add_argument('--maxiter', default=100, type=int)
+    parser.add_argument('--maxiter', default=1000, type=int)
     parser.add_argument('--pretrain_epochs', default=15, type=int)
     parser.add_argument('--update_interval', default=30, type=int)
     parser.add_argument('--tol', default=0.0001, type=float)
-    parser.add_argument('--ae_weights',
-                        default='/data/search_snippets/results/ae_weights.h5')
-    parser.add_argument('--save_dir',
-                        default='/data/search_snippets/results/')
+    parser.add_argument('--ae_weights', default='/data/search_snippets/results/ae_weights.h5')
+    parser.add_argument('--save_dir', default='/data/search_snippets/results/')
     args = parser.parse_args()
-
-    import os
 
     if not os.path.exists(args.save_dir):
         os.makedirs(args.save_dir)
 
-    print(args)
-
     if args.dataset == 'search_snippets':
         args.update_interval = 100
+        args.maxiter = 100
     elif args.dataset == 'stackoverflow':
         args.update_interval = 500
+        args.maxiter = 1500
+        args.pretrain_epochs = 12
     elif args.dataset == 'biomedical':
         args.update_interval = 300
     else:
         raise Exception("Dataset not found!")
+
+    print(args)
 
     # load dataset
     ####################################################################################
@@ -234,11 +235,11 @@ if __name__ == "__main__":
     n_clusters = len(np.unique(y))
 
     X_test, X_dev, y_test, y_dev = train_test_split(x, y, test_size=0.1, random_state=0)
-    x, y = shuffle(x, y)
+    x, y = shuffle(X_test, y_test)
 
     # create model
     ####################################################################################
-    dec = STC(dims=[x.shape[-1], 512, 512, 2000, 20], n_clusters=n_clusters)
+    dec = STC(dims=[x.shape[-1], 500, 500, 2000, 20], n_clusters=n_clusters)
 
     # pretrain model
     ####################################################################################
@@ -251,7 +252,7 @@ if __name__ == "__main__":
 
     dec.model.summary()
     t0 = time()
-    dec.compile(SGD(0.01, 0.9), loss='kld')
+    dec.compile(SGD(0.1, 0.9), loss='kld')
 
     # clustering
     ####################################################################################
