@@ -83,7 +83,7 @@ def load_stackoverflow(data_path='data/stackoverflow/'):
     return XX, y
 
 
-def load_search_snippet2(data_path='data/SearchSnippets/new/'):
+def load_search_snippet2(data_path='data/SearchSnippets/'):
     mat = scipy.io.loadmat(data_path + 'SearchSnippets-STC2.mat')
 
     emb_index = np.squeeze(mat['vocab_emb_Word2vec_48_index'])
