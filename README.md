@@ -1,18 +1,21 @@
 # Short text clustering
 
 
-This repository contains the code used in EduQG paper:
+This repository contains the code presented in rep4NLP 2019:
 
-[EduQG: A Multi-format Multiple Choice Dataset for the Educational Domain](https://arxiv.org/abs/2210.06104)
+[A Self-training Approach for Short Text Clustering](https://sites.google.com/view/repl4nlp2019/accepted-papers?authuser=0)
 
-If you use the dataset please cite:  
+If you use part of the code please cite:  
 
 ```  
-@misc{2210.06104,
-Author = {Amir Hadifar and Semere Kiros Bitew and Johannes Deleu and Chris Develder and Thomas Demeester},
-Title = {EduQG: A Multi-format Multiple Choice Dataset for the Educational Domain},
-Year = {2022},
-Eprint = {arXiv:2210.06104},
+@InProceedings{hadifar2019stc,
+  author = 	"Hadifar, Amir
+		and Sterckx, Lucas
+		and Demeester, Thomas
+		and Develder, Chris",
+  title = 	"A Self-Training Approach for Short Text Clustering",
+  booktitle = 	"Representation Learning for NLP workshop (Rep4NLP), ",
+  year = 	"2019",
 }
 ```
 
@@ -22,23 +25,24 @@ Eprint = {arXiv:2210.06104},
 > pip install -r requirements.txt 
 
 
-#### pretrain from scratch ###
+#### Reproduce results for stackoverflow ###
 
-<pre>
-sh run_qg_exp.sh
+<pre> python STC.py --maxiter 1500 --ae_weights data/stackoverflow/results/ae_weights.h5 --save_dir data/stackoverflow/results/
 </pre>
 
-### Load ans-agnostic models:
-```
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
+if you have used the datasets, please cite the following paper:
 
-tokenizer = AutoTokenizer.from_pretrained("hadifar/openstax_qg_agno")
-
-model = AutoModelForSeq2SeqLM.from_pretrained("hadifar/openstax_qg_agno")
+```
+@article{xu2017self,
+title={Self-Taught Convolutional Neural Networks for Short Text Clustering},
+author={Xu, Jiaming and Xu, Bo and Wang, Peng and Zheng, Suncong and Tian, Guanhua and Zhao, Jun and Xu, Bo},
+journal={Neural Networks},    
+volume={88},
+pages={22-31},
+year={2017}
+}
 ```
 
-### Load ans-aware models
-```
-comming soon...
-```
+#### Acknowledge
 
+This code is based on repo from [here](https://github.com/XifengGuo/DEC-keras).
