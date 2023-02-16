@@ -13,6 +13,9 @@ from tensorflow.python.keras.optimizers import SGD
 import metrics
 from data_loader import load_data
 
+import nltk
+nltk.download('punkt')
+
 
 def autoencoder(dims, act=tf.nn.leaky_relu, init='glorot_uniform'):
     n_stacks = len(dims) - 1
@@ -200,8 +203,8 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='train',
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument('--dataset', default='stackoverflow',
-                        choices=['stackoverflow', 'biomedical', 'search_snippets'])
+    parser.add_argument('--dataset', default='leetcode',
+                        choices=['stackoverflow', 'biomedical', 'search_snippets', 'leetcode'])
 
     parser.add_argument('--batch_size', default=64, type=int)
     parser.add_argument('--maxiter', default=1000, type=int)
@@ -219,6 +222,10 @@ if __name__ == "__main__":
         args.update_interval = 100
         args.maxiter = 100
     elif args.dataset == 'stackoverflow':
+        args.update_interval = 500
+        args.maxiter = 1500
+        args.pretrain_epochs = 12
+    elif args.dataset == 'leetcode':
         args.update_interval = 500
         args.maxiter = 1500
         args.pretrain_epochs = 12

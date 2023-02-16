@@ -8,13 +8,43 @@ import numpy as np
 import scipy.io
 from sklearn.decomposition import PCA, TruncatedSVD
 from sklearn.preprocessing import MinMaxScaler
+import json
+from gensim.models import Word2Vec
+
+ENCODING = 'utf-8'
+SIF_ALPHA = 0.1
+
+
+def load_leetcode(data_path='data/leetcode/'):
+    with open(data_path + 'leetcode_questions_parsed.json', 'r') as f:
+        parsed_json = json.load(f)
+    questions = [v['body'] for k, v in parsed_json.items()]
+    tokenized_questions = [nltk.word_tokenize(q) for q in questions]
+    flattened_questions = [word for q in tokenized_questions for word in q]
+    word_counts = Counter(flattened_questions)
+    total_count = sum(word_counts.values())
+    word_props = {k: word_counts[k] / total_count for k in word_counts}
+    word_weights = {k: SIF_ALPHA / (SIF_ALPHA + word_props[k]) for k in word_props}
+    # parameters can be tweaked, or use pretrained:
+    word2vec_model = Word2Vec(sentences=tokenized_questions, size=100, window=5, min_count=1, workers=4)
+    question_vectors = np.array([sum([word_weights[w] * word2vec_model[w] for w in q]) for q in tokenized_questions])
+    pca_model = PCA(n_components=1)
+    pca_model.fit(question_vectors)
+    pca_component = pca_model.components_
+    vectors_minus_component = question_vectors - question_vectors.dot(pca_component.transpose()) * pca_component
+    scaler = MinMaxScaler()
+    X = scaler.fit_transform(vectors_minus_component)
+    labels = [v['label'] for k, v in parsed_json.items()]
+    label_to_int_dict = {'Easy': 0, 'Medium': 1, 'Hard': 2}
+    y = np.array([label_to_int_dict[t] for t in labels])
+    return X, y
 
 
 def load_stackoverflow(data_path='data/stackoverflow/'):
 
     # load SO embedding
-    with open(data_path + 'vocab_withIdx.dic', 'r') as inp_indx, \
-            open(data_path + 'vocab_emb_Word2vec_48_index.dic', 'r') as inp_dic, \
+    with open(data_path + 'vocab_withIdx.dic', 'r', encoding=ENCODING) as inp_indx, \
+            open(data_path + 'vocab_emb_Word2vec_48_index.dic', 'r', encoding=ENCODING) as inp_dic, \
             open(data_path + 'vocab_emb_Word2vec_48.vec') as inp_vec:
         pair_dic = inp_indx.readlines()
         word_index = {}
@@ -36,7 +66,7 @@ def load_stackoverflow(data_path='data/stackoverflow/'):
         del emb_index
         del emb_vec
 
-    with open(data_path + 'title_StackOverflow.txt', 'r') as inp_txt:
+    with open(data_path + 'title_StackOverflow.txt', 'r', encoding=ENCODING) as inp_txt:
         all_lines = inp_txt.readlines()[:-1]
         text_file = " ".join([" ".join(nltk.word_tokenize(c)) for c in all_lines])
         word_count = Counter(text_file.split())
@@ -238,5 +268,7 @@ def load_data(dataset_name):
         return load_biomedical()
     elif dataset_name == 'search_snippets':
         return load_search_snippet2()
+    elif dataset_name == 'leetcode':
+        return load_leetcode()
     else:
         raise Exception('dataset not found...')
