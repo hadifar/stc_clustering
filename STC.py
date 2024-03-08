@@ -8,7 +8,7 @@ import tensorflow as tf
 from sklearn.cluster import KMeans
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
-from tensorflow.python.keras.optimizers import SGD
+from tensorflow.keras.optimizers import SGD
 
 import metrics
 from data_loader import load_data
@@ -46,7 +46,7 @@ class ClusteringLayer(tf.keras.layers.Layer):
 
     def build(self, input_shape):
         assert len(input_shape) == 2
-        input_dim = input_shape[1].value
+        input_dim = input_shape[1]
         self.input_spec = tf.keras.layers.InputSpec(dtype=tf.keras.backend.floatx(), shape=(None, input_dim))
         self.clusters = self.add_weight(shape=(self.n_clusters, input_dim), initializer='glorot_uniform',
                                         name='clusters')

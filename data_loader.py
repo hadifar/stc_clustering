@@ -13,9 +13,9 @@ from sklearn.preprocessing import MinMaxScaler
 def load_stackoverflow(data_path='data/stackoverflow/'):
 
     # load SO embedding
-    with open(data_path + 'vocab_withIdx.dic', 'r') as inp_indx, \
-            open(data_path + 'vocab_emb_Word2vec_48_index.dic', 'r') as inp_dic, \
-            open(data_path + 'vocab_emb_Word2vec_48.vec') as inp_vec:
+    with open(data_path + 'vocab_withIdx.dic', 'r',encoding='utf-8') as inp_indx, \
+            open(data_path + 'vocab_emb_Word2vec_48_index.dic', 'r', encoding='utf-8') as inp_dic, \
+            open(data_path + 'vocab_emb_Word2vec_48.vec',encoding='utf-8') as inp_vec:
         pair_dic = inp_indx.readlines()
         word_index = {}
         for pair in pair_dic:
@@ -36,7 +36,7 @@ def load_stackoverflow(data_path='data/stackoverflow/'):
         del emb_index
         del emb_vec
 
-    with open(data_path + 'title_StackOverflow.txt', 'r') as inp_txt:
+    with open(data_path + 'title_StackOverflow.txt', 'r', encoding='utf-8') as inp_txt:
         all_lines = inp_txt.readlines()[:-1]
         text_file = " ".join([" ".join(nltk.word_tokenize(c)) for c in all_lines])
         word_count = Counter(text_file.split())
